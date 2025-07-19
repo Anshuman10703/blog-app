@@ -3,6 +3,7 @@
 
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import Image from 'next/image'
 // Import any other components needed for displaying a single blog (e.g., Header, Footer)
 // import Header from '@/Components/Header';
 // import Footer from '@/Components/Footer';
