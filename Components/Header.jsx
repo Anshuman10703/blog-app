@@ -1,3 +1,4 @@
+// Header.jsx
 import { assets } from '@/Assets/assets'
 import axios from 'axios';
 import Image from 'next/image'
@@ -5,14 +6,14 @@ import React, { useState } from 'react'
 import { toast } from 'react-toastify';
 
 const Header = () => {
-
   const [email,setEmail] = useState("");
 
   const onSubmitHandler = async (e) =>{
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("email",email);
-    const response = await axios.post('/api/email',formData);
+    // --- CHANGE STARTS HERE ---
+    const dataToSend = { email: email }; // Create a plain JavaScript object
+    const response = await axios.post('/api/email', dataToSend); // axios sends JSON by default for objects
+    // --- CHANGE ENDS HERE ---
     if (response.data.success) {
       toast.success(response.data.msg);
       setEmail("");
@@ -22,6 +23,7 @@ const Header = () => {
     }
   }
 
+  // ... rest of your Header.jsx component is the same
   return (
     <div className='py-5 px-5 md:px-12 lg:px-28'>
       <div className='flex justify-between items-center'>
