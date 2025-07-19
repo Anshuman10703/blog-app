@@ -1,27 +1,26 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Crucial for allowing file uploads via formidable in API routes
-  api: {
-    bodyParser: false, // Disable default body parser, formidable will handle it
-  },
-  // Configure domains for next/image component to load images from S3
+  // The 'api' object has been REMOVED from here, as it belongs inside API route files.
+
+  // Images configuration for next/image to load from S3
   images: {
-    // Using remotePatterns is more robust than just 'domains'
+    // Using remotePatterns is the recommended way to configure external image domains in Next.js 13+
     remotePatterns: [
       {
         protocol: 'https',
-        // IMPORTANT: Replace 'YOUR_S3_BUCKET_NAME' and 'YOUR_AWS_REGION'
-        // This hostname must exactly match your S3 bucket's URL structure
-        hostname: 'blog-app-images-2025.s3.us-west-1.amazonaws.com',
-        port: '',
-        pathname: '/**', // Allows any path within that bucket
+        // IMPORTANT: Replace 'YOUR_S3_BUCKET_NAME' with the exact name of your S3 bucket
+        // IMPORTANT: Replace 'YOUR_AWS_REGION' with your AWS region (e.g., 'ap-south-1', 'us-east-1')
+        hostname: 'YOUR_S3_BUCKET_NAME.s3.YOUR_AWS_REGION.amazonaws.com',
+        port: '', // Keep empty
+        pathname: '/**', // Allows any path within that S3 bucket
       },
+      // You might also need this if your authorImg is coming from a different dynamic source or CDN
+      // (Be cautious with 'h_stname: "**"' in production, it allows any hostname)
       {
-        // If you have author images hosted elsewhere (like a public domain)
-        // or if 'author_img.png' is served from your local public folder
-        // You might need to adjust or remove this if author images are local or from a fixed domain.
-        protocol: 'https', // or http
-        hostname: '**', // Be careful with wildcard, restrict to known domains in production
+        protocol: 'https', // or http if applicable
+        hostname: '**', // Broad wildcard, narrow down if possible (e.g., 'another-image-cdn.com')
+        port: '',
+        pathname: '/**',
       },
     ],
   },
