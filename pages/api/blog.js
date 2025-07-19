@@ -15,7 +15,7 @@ export const config = {
 // IMPORTANT: Replace with your actual DynamoDB and S3 bucket names
 const BLOG_TABLE_NAME = "Blogs"; // Ensure this matches your DynamoDB table name exactly
 const S3_BUCKET_NAME = "blog-app-images-2025"; // YOUR S3 bucket name (e.g., my-blog-app-images-2025)
-const AWS_REGION = process.env.AWS_REGION;
+const AWS_REGION = process.env.MY_AWS_REGION;
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
