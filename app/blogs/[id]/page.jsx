@@ -1,7 +1,8 @@
 // app/blogs/[id]/page.jsx
 "use client"; // Mark as client component as it uses useState and useEffect
 
-import React, { useEffect, useState } from 'react';
+// IMPORTANT: Import useCallback
+import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import Image from 'next/image'
 // Import any other components needed for displaying a single blog (e.g., Header, Footer)
@@ -14,7 +15,8 @@ const Page = ({ params }) => { // Next.js passes route params as 'params' prop i
 
     const [blogData, setBlogData] = useState(null); // State to hold the single blog post data
 
-    const fetchBlogData = async () => {
+    // CORRECTED: Wrapped fetchBlogData in useCallback
+    const fetchBlogData = useCallback(async () => {
         if (!id) return; // Don't fetch if ID is not available yet
 
         try {
@@ -31,13 +33,11 @@ const Page = ({ params }) => { // Next.js passes route params as 'params' prop i
             console.error("Error fetching single blog post:", error);
             setBlogData(null);
         }
-    };
+    }, [id]); // CORRECTED: Dependencies for useCallback are 'id'
 
     useEffect(() => {
         fetchBlogData();
-    }, [id, fetchBlogData]); // Add 'id' and 'fetchBlogData' to dependency array.
-                            // 'fetchBlogData' should ideally be memoized if complex,
-                            // but for simplicity, adding it here.
+    }, [id, fetchBlogData]); // Corrected: Add 'id' and 'fetchBlogData' to dependency array.
 
     if (!blogData) {
         return (
