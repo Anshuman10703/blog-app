@@ -1,6 +1,6 @@
 // pages/api/blog.js
 import { ddbDocClient, s3Client } from '@/lib/aws-dynamodb'; // Import both clients
-import { ScanCommand, PutCommand, DeleteCommand } from "@aws-sdk/lib-dynamodb";
+import { ScanCommand, PutCommand, DeleteCommand, GetCommand } from "@aws-sdk/lib-dynamodb";
 import { PutObjectCommand } from "@aws-sdk/client-s3"; // Import S3 PutObjectCommand
 import formidable from 'formidable';
 import fs from 'fs';
@@ -15,14 +15,16 @@ export const config = {
 // IMPORTANT: Replace with your actual DynamoDB and S3 bucket names
 const BLOG_TABLE_NAME = "Blogs"; // Ensure this matches your DynamoDB table name exactly
 const S3_BUCKET_NAME = "blog-app-images-2025"; // YOUR S3 bucket name (e.g., my-blog-app-images-2025)
-const AWS_REGION = process.env.MY_AWS_REGION;
 
 export default async function handler(req, res) {
+  // --- TEMPORARY DEBUGGING LINE ---
+  console.log("DEBUG: process.env.MY_AWS_REGION received:", process.env.MY_AWS_REGION);
+  const AWS_REGION = process.env.MY_AWS_REGION; // Ensure this is read here, after the log
+  // --- END TEMPORARY DEBUGGING LINE ---
+
   if (req.method === 'POST') {
     try {
-      // --- CORRECTION HERE ---
-      // Change from 'new formidable.IncomingForm()' to 'formidable()'
-      const form = formidable(); // <--- CORRECTED LINE
+      const form = formidable(); // Correct way to instantiate Formidable
 
       const { fields, files } = await new Promise((resolve, reject) => {
         form.parse(req, (err, fields, files) => {
@@ -55,13 +57,10 @@ export default async function handler(req, res) {
         };
 
         await s3Client.send(new PutObjectCommand(s3UploadParams));
-        imageUrl = `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/${s3Key}`;
+        imageUrl = `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/${s3Key}`; // Constructed S3 URL
         console.log("Image uploaded to S3:", imageUrl);
       } else {
-        // Fallback or error if image is required but not provided
         console.warn("No image file provided for blog post.");
-        // You might want to return an error here if an image is mandatory
-        // return res.status(400).json({ success: false, msg: "Blog image is required." });
       }
 
       // Generate a unique ID for the blog post
@@ -89,8 +88,26 @@ export default async function handler(req, res) {
     }
   } else if (req.method === 'GET') {
     try {
-      const { Items } = await ddbDocClient.send(new ScanCommand({ TableName: BLOG_TABLE_NAME }));
-      return res.status(200).json({ blogs: Items });
+      const { id } = req.query; // Check if an 'id' query parameter exists
+
+      if (id) {
+        // If ID is present, fetch a single blog post
+        const { Item } = await ddbDocClient.send(new GetCommand({
+          TableName: BLOG_TABLE_NAME,
+          Key: { // Specify the primary key to retrieve the item
+            id: id,
+          },
+        }));
+        if (Item) {
+            return res.status(200).json({ success: true, blog: Item });
+        } else {
+            return res.status(404).json({ success: false, msg: "Blog not found." });
+        }
+      } else {
+        // If no ID, scan for all blog posts
+        const { Items } = await ddbDocClient.send(new ScanCommand({ TableName: BLOG_TABLE_NAME }));
+        return res.status(200).json({ success: true, blogs: Items });
+      }
     } catch (error) {
       console.error("Error fetching blogs from DynamoDB:", error);
       return res.status(500).json({ success: false, msg: "Error fetching blogs." });
