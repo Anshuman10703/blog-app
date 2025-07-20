@@ -1,9 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Crucial for allowing file uploads via formidable in API routes
-  api: {
-    bodyParser: false, // Disable default body parser, formidable will handle it
-  },
   // Configure domains for next/image component to load images from S3
   images: {
     // Using remotePatterns is the recommended way to configure external image domains in Next.js 13+
