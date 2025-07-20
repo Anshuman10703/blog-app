@@ -1,23 +1,23 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // The 'api' object has been REMOVED from here, as it belongs inside API route files.
-
-  // Images configuration for next/image to load from S3
+  // Crucial for allowing file uploads via formidable in API routes
+  api: {
+    bodyParser: false, // Disable default body parser, formidable will handle it
+  },
+  // Configure domains for next/image component to load images from S3
   images: {
     // Using remotePatterns is the recommended way to configure external image domains in Next.js 13+
     remotePatterns: [
       {
         protocol: 'https',
-        // IMPORTANT: Replace 'YOUR_S3_BUCKET_NAME' with the exact name of your S3 bucket
-        // IMPORTANT: Replace 'YOUR_AWS_REGION' with your AWS region (e.g., 'ap-south-1', 'us-east-1')
-        hostname: 'blog-app-images-2025.s3.us-west-1.amazonaws.com',
+        // IMPORTANT: Use your ACTUAL S3 bucket name and the CORRECT AWS region for your bucket
+        // Example: 'my-blog-app-images-2025.s3.us-west-1.amazonaws.com'
+        hostname: 'blog-app-images-2025.s3.us-west-1.amazonaws.com', // <--- THIS MUST EXACTLY MATCH YOUR S3 URL'S HOSTNAME
         port: '', // Keep empty
         pathname: '/**', // Allows any path within that S3 bucket
       },
-      // You might also need this if your authorImg is coming from a different dynamic source or CDN
-      // (Be cautious with 'h_stname: "**"' in production, it allows any hostname)
-      {
-        protocol: 'https', // or http if applicable
+      { // Keep this if you have other dynamic images/icons (like assets.profile_icon if it's external)
+        protocol: 'https',
         hostname: '**', // Broad wildcard, narrow down if possible (e.g., 'another-image-cdn.com')
         port: '',
         pathname: '/**',
