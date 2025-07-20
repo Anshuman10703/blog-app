@@ -10,7 +10,7 @@ const nextConfig = {
         protocol: 'https',
         // IMPORTANT: Replace 'YOUR_S3_BUCKET_NAME' with the exact name of your S3 bucket
         // IMPORTANT: Replace 'YOUR_AWS_REGION' with your AWS region (e.g., 'ap-south-1', 'us-east-1')
-        hostname: 'YOUR_S3_BUCKET_NAME.s3.YOUR_AWS_REGION.amazonaws.com',
+        hostname: 'blog-app-images-2025.s3.us-west-11.amazonaws.com',
         port: '', // Keep empty
         pathname: '/**', // Allows any path within that S3 bucket
       },
