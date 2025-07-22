@@ -12,7 +12,7 @@ const Page = () => { // Renamed from 'page' to 'Page' for convention, though 'pa
         title:"",
         description:"",
         category:"Startup",
-        author:"Alex Bennett",
+        author:"Anshuman",
         authorImg:"/author_img.png" // Assuming this is a local path or publicly accessible URL
     })
 
@@ -55,7 +55,7 @@ const Page = () => { // Renamed from 'page' to 'Page' for convention, though 'pa
                     title:"",
                     description:"",
                     category:"Startup",
-                    author:"Alex Bennett",
+                    author:"Anshuman",
                     authorImg:"/author_img.png"
                 });
             } else {

@@ -60,7 +60,7 @@ const Page = ({ params }) => { // Next.js passes route params as 'params' prop i
                     <Image
                         src={blogData.image}
                         alt={blogData.title || 'Blog Image'}
-                        width={800} // Adjust as needed
+                        width={400} // Adjust as needed
                         height={400} // Adjust as needed
                         className="w-full h-auto object-cover mb-6 rounded-lg shadow-md"
                     />
